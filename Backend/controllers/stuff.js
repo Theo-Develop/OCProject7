@@ -1,6 +1,9 @@
 const Book = require("../models/Books");
 
-/* exports.createBooks = (req, res, next) => {
+exports.createBooks = (req, res, next) => {
+    if (!req.body.book) {
+        return res.status(400).json({ message: "Aucune donnée de livre fournie." });
+    }
     const bookObject = JSON.parse(req.body.book);
     delete bookObject._id;
     delete bookObject._userId;
@@ -11,17 +14,6 @@ const Book = require("../models/Books");
     });
     book.save()
         .then(() => res.status(201).json({ message: "Livre enregistré !" }))
-        .catch(error => res.status(400).json({ error }));
-};
- */
-exports.createBooks = (req, res, next) => {
-    delete req.body._id;
-    delete req.body._userId;
-    const book = new Book({
-        ...req.body
-    });
-    book.save()
-        .then(() => res.status(201).json({ message: 'Livre enregistré !' }))
         .catch(error => res.status(400).json({ error }));
 };
 

@@ -1,6 +1,7 @@
 const Book = require("../models/Books");
 const fs = require("fs");
 
+// Function to create a new book entry
 exports.createBooks = (req, res, next) => {
     if (!req.body.book) {
         return res.status(400).json({ message: "Aucune donnée de livre fournie." });
@@ -18,6 +19,7 @@ exports.createBooks = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
+// Function to modify an existing book entry
 exports.modifyBooks = (req, res, next) => {
     const bookObject = req.file ? {
         ...JSON.parse(req.body.book),
@@ -39,6 +41,7 @@ exports.modifyBooks = (req, res, next) => {
         });
 };
 
+// Function to delete a book entry
 exports.deleteBooks = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => {
@@ -58,18 +61,21 @@ exports.deleteBooks = (req, res, next) => {
         });
 };
 
+// Function to retrieve a single book entry by its ID
 exports.readOneBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => res.status(200).json(book))
         .catch(error => res.status(404).json({ error }));
 };
 
+// Function to retrieve all book entries
 exports.readAllBooks = (req, res, next) => {
     Book.find()
         .then(books => res.status(200).json(books))
         .catch(error => res.status(400).json({ error }));
 };
 
+// Function to retrieve the top 3 books with the highest average rating
 exports.getBestRating = (req, res, next) => {
     Book.find().sort({ averageRating: -1 }).limit(3)
         .then(books => res.status(200).json(books))

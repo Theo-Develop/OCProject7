@@ -7,8 +7,10 @@ const userRoutes = require("./routes/user");
 
 require("dotenv").config();
 
+// Create an Express application
 const app = express();
 
+// Connect to MongoDB using the connection URL from environment variables
 mongoose.connect(process.env.DB_URl,
     {
         useNewUrlParser: true,
@@ -17,8 +19,10 @@ mongoose.connect(process.env.DB_URl,
     .then(() => console.log("Connexion à MongoDB réussie !"))
     .catch(() => console.log("Connexion à MongoDB échouée !"));
 
+// Middleware to parse JSON bodies in incoming requests
 app.use(express.json());
 
+// Middleware to set CORS (Cross-Origin Resource Sharing) headers to allow cross-origin requests
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization");

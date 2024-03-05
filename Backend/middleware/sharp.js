@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const fs = require('fs');
 
+// Middleware function to compress uploaded images using sharp
 module.exports = async (req, res, next) => {
     if (!req.file) {
         return next()

@@ -7,6 +7,7 @@ const MIME_TYPES = {
     "image/webp": "webp"
 };
 
+// Middleware function to configure storage for multer, specifying the destination and filename for uploaded files
 const storage = multer.diskStorage({
     destination: (req, res, callback) => {
         callback(null, "images")

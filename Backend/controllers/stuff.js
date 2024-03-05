@@ -27,7 +27,7 @@ exports.modifyBooks = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then((book) => {
             if (book.userId != req.auth.userId) {
-                res.status(401).json({ message: 'Not authorized' });
+                res.status(403).json({ message: "403: unauthorized request" });
             } else {
                 Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet modifié!' }))
@@ -69,3 +69,9 @@ exports.readAllBooks = (req, res, next) => {
         .then(books => res.status(200).json(books))
         .catch(error => res.status(400).json({ error }));
 };
+
+exports.getBestRating = (req, res, next) => {
+    Book.find().sort({ averageRating: -1 }).limit(3)
+        .then(books => res.status(200).json(books))
+        .catch(error => res.status(400).json({ error }));
+}; 

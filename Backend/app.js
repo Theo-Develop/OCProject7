@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const path = require('path');
+const path = require("path");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
 
 const bookRoutes = require("./routes/book");
 const userRoutes = require("./routes/user");
@@ -29,6 +31,15 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
     next();
 });
+
+// DATE SANITIZATION against NoSQL query injection
+app.use(mongoSanitize());
+
+// SECURE HEADER HTTP
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
+
 
 app.use("/api/books", bookRoutes);
 app.use("/api/auth", userRoutes);

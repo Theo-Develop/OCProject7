@@ -11,7 +11,7 @@ exports.createBooks = (req, res, next) => {
     const book = new Book({
         ...bookObject,
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.compressedFilename}`
     });
     book.save()
         .then(() => res.status(201).json({ message: "Livre enregistré !" }))
@@ -21,7 +21,7 @@ exports.createBooks = (req, res, next) => {
 exports.modifyBooks = (req, res, next) => {
     const bookObject = req.file ? {
         ...JSON.parse(req.body.book),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.compressedFilename}`
     } : { ...req.body };
     delete bookObject._userId;
     Book.findOne({ _id: req.params.id })
@@ -74,4 +74,6 @@ exports.getBestRating = (req, res, next) => {
     Book.find().sort({ averageRating: -1 }).limit(3)
         .then(books => res.status(200).json(books))
         .catch(error => res.status(400).json({ error }));
-}; 
+};
+
+

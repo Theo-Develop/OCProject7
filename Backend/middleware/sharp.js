@@ -1,5 +1,5 @@
-const sharp = require('sharp');
-const fs = require('fs');
+const sharp = require("sharp");
+const fs = require("fs");
 
 // Middleware function to compress uploaded images using sharp
 module.exports = async (req, res, next) => {
@@ -7,8 +7,8 @@ module.exports = async (req, res, next) => {
         return next()
     };
     try {
-        req.file.compressedFilename = req.file.filename + '.webp';
-        req.file.compressedFilePath = req.file.path + '.webp';
+        req.file.compressedFilename = req.file.filename + ".webp";
+        req.file.compressedFilePath = req.file.path + ".webp";
 
         await sharp(req.file.path)
             .resize(500, 500)

@@ -1,4 +1,4 @@
-const passwordValidator = require('password-validator');
+const passwordValidator = require("password-validator");
 
 // Middleware to check a password meets certain security requirements
 const validatePassword = (req, res, next) => {
@@ -13,7 +13,7 @@ const validatePassword = (req, res, next) => {
         .has().not().spaces()
 
     if (!schema.validate(userPassword)) {
-        return res.status(400).json({ error: 'Mot de passe invalide' });
+        return res.status(400).json({ error: "Mot de passe invalide" });
     }
     next();
 };

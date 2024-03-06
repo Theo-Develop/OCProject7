@@ -13,7 +13,7 @@ require("dotenv").config();
 const app = express();
 
 // Connect to MongoDB using the connection URL from environment variables
-mongoose.connect(process.env.DB_URl,
+mongoose.connect("mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@" + process.env.DB_CLUSTER + ".mongodb.net/?retryWrites=" + process.env.DB_AUTHSOURCE + "&w=" + process.env.DB_AUTHMECHANISM + "&appName=" + process.env.DB_APPNAME,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true

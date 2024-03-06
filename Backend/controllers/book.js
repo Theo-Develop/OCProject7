@@ -10,6 +10,8 @@ exports.createBooks = (req, res, next) => {
     delete bookObject._id;
     delete bookObject._userId;
     const book = new Book({
+        ratings: [],
+        averageRating: 0,
         ...bookObject,
         userId: req.auth.userId,
         imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.compressedFilename}`
@@ -29,7 +31,7 @@ exports.modifyBooks = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then((book) => {
             if (book.userId != req.auth.userId) {
-                res.status(403).json({ message: "403: unauthorized request" });
+                res.status(403).json({ message: "unauthorized request" });
             } else {
                 Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: "Objet modifié!" }))

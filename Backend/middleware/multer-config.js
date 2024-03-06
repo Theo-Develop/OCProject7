@@ -1,4 +1,5 @@
 const multer = require("multer");
+const path = require("path");
 
 const MIME_TYPES = {
     "image/jpg": "jpg",
@@ -13,9 +14,15 @@ const storage = multer.diskStorage({
         callback(null, "images")
     },
     filename: (req, file, callback) => {
+        // Adding this line for upload UTF8
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+            'utf8',);
         const name = file.originalname.split(" ").join("_");
         const extension = MIME_TYPES[file.mimetype];
-        callback(null, name + Date.now() + "." + extension);
+        const { name: onlyFileName } = path.parse(name);
+        const finalFilename = onlyFileName + '-' + Date.now() + '.' + extension;
+        // Sending to the next middleware / controller with the destination filename
+        callback(null, finalFilename);
     }
 });
 

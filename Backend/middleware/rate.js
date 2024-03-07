@@ -5,6 +5,6 @@ module.exports = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 5,
     handler: function (req, res, next) {
-        return res.status(429).json({ error: "Vous avez envoyé trop de requêtes, attendez une minute" })
+        return res.status(429).json({ error: "You sent too many requests, wait a minute" })
     }
 });

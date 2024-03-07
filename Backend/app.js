@@ -18,8 +18,8 @@ mongoose.connect(process.env.DB_URL,
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    .then(() => console.log("Connexion à MongoDB réussie !"))
-    .catch(() => console.log("Connexion à MongoDB échouée !"));
+    .then(() => console.log("Connection to MongoDB successful!"))
+    .catch(() => console.log("Connection to MongoDB failed!"));
 
 // Middleware to parse JSON bodies in incoming requests
 app.use(express.json());

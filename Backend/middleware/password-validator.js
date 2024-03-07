@@ -13,7 +13,7 @@ const validatePassword = (req, res, next) => {
         .has().not().spaces()
 
     if (!schema.validate(userPassword)) {
-        return res.status(400).json({ error: "Mot de passe invalide" });
+        return res.status(400).json({ error: "invalid password" });
     }
     next();
 };

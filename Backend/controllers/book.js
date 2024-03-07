@@ -3,9 +3,6 @@ const fs = require("fs");
 
 // Function to create a new book entry
 exports.createBooks = (req, res, next) => {
-    if (!req.body.book) {
-        return res.status(400).json({ message: "Aucune donnée de livre fournie." });
-    }
     const bookObject = JSON.parse(req.body.book);
     delete bookObject._id;
     delete bookObject._userId;
@@ -17,7 +14,7 @@ exports.createBooks = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.compressedFilename}`
     });
     book.save()
-        .then(() => res.status(201).json({ message: "Livre enregistré !" }))
+        .then(() => res.status(201).json({ message: "book saved!" }))
         .catch(error => res.status(400).json({ error }));
 };
 
@@ -34,7 +31,7 @@ exports.modifyBooks = (req, res, next) => {
                 res.status(403).json({ message: "unauthorized request" });
             } else {
                 Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
-                    .then(() => res.status(200).json({ message: "Objet modifié!" }))
+                    .then(() => res.status(200).json({ message: "modified book" }))
                     .catch(error => res.status(401).json({ error }));
             }
         })
@@ -48,22 +45,22 @@ exports.deleteBooks = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => {
             if (book.userId != req.auth.userId) {
-                res.status(401).json({ message: "Non autorisé" });
+                res.status(403).json({ message: "unauthorized request" });
             } else {
                 const filename = book.imageUrl.split("/images/")[1];
                 fs.unlink(`images/${filename}`, () => {
                     Book.deleteOne({ _id: req.params.id })
-                        .then(() => { res.status(200).json({ message: "Objet supprimé !" }) })
+                        .then(() => { res.status(200).json({ message: "deleted book" }) })
                         .catch(error => res.status(401).json({ error }));
                 });
             }
         })
         .catch(error => {
-            res.status(500).json({ error });
+            res.status(400).json({ error });
         });
 };
 
-// Function to retrieve a single book entry by its ID
+// Function to retrieve a single book entry by his ID
 exports.readOneBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => res.status(200).json(book))

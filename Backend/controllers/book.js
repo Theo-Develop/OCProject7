@@ -81,4 +81,53 @@ exports.getBestRating = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
+// Function to add a rating by other user for only one time
+exports.createNewRating = (req, res, next) => {
 
+    const { userId, rating } = req.body;
+
+    const user = req.body.userId;
+
+    if (user !== req.auth.userId) {
+        return res.status(401).json({ message: 'unauthorized request' });
+    }
+
+    // Check that the note is between 0 and 5
+    if (rating < 0 || rating > 5) {
+        return res.status(400).json({ error: "La note doit être un nombre entre 0 et 5." });
+    }
+
+    Book.findById(req.params.id)
+        .then(book => {
+            if (!book) {
+                return res.status(404).json({ error: "Book not find" });
+            }
+
+            const userRating = book.ratings.find(rating => rating.userId === userId);
+
+            if (userRating) {
+                return res.status(400).json({
+                    error: "the user has already rated this book"
+                });
+            }
+
+            book.ratings.push({ userId, grade: rating });
+
+            // Calculate the new average score
+            const totalRatings = book.ratings.length;
+            const sumRatings = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
+            const averageRating = sumRatings / totalRatings;
+            book.averageRating = averageRating;
+
+            book.save()
+                .then(updatedBook => {
+                    res.status(200).json(updatedBook);
+                })
+                .catch(error => {
+                    res.status(500).json({ error });
+                });
+        })
+        .catch(error => {
+            res.status(500).json({ error });
+        });
+};

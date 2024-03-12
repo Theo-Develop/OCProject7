@@ -14,12 +14,12 @@ exports.signup = (req, res, next) => {
                 password: hash
             });
             user.save()
-                .then(() => res.status(201).json({ message: "user create!" }))
-                .catch(error => res.status(400).json({ error }));
+                .then(() => res.status(201).json({ message: "User created successfully!" }))
+                .catch(error => res.status(404).json({ message: "Error creating user", details: error.message }));
         })
-        .catch(error => res.status(500).json({ error }));
-
+        .catch(error => res.status(500).json({ message: "Failed to hash the password", details: error.message }));
 };
+
 
 // Function to connect to one account
 exports.login = (req, res, next) => {
@@ -43,8 +43,8 @@ exports.login = (req, res, next) => {
                             });
                         }
                     })
-                    .catch(error => res.status(500).json({ error }));
+                    .catch(error => res.status(404).json({ message: "Failed to compare passwords", details: error.message }));
             }
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => res.status(404).json({ message: "Failed to find user", details: error.message }));
 };

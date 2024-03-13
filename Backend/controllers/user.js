@@ -5,6 +5,7 @@ const User = require("../models/User");
 
 require("dotenv").config();
 
+// Erreur 400 remontée pour evitez de données des infos a des utilisateurs malveillants
 // Function to create a new account
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -15,12 +16,13 @@ exports.signup = (req, res, next) => {
             });
             user.save()
                 .then(() => res.status(201).json({ message: "User created successfully!" }))
-                .catch(error => res.status(404).json({ message: "Error creating user", details: error.message }));
+                .catch(error => res.status(400).json({ message: "Error creating user", details: error.message }));
         })
         .catch(error => res.status(500).json({ message: "Failed to hash the password", details: error.message }));
 };
 
 
+// Erreur 400 remontée pour evitez de données des infos a des utilisateurs malveillants
 // Function to connect to one account
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
@@ -43,8 +45,8 @@ exports.login = (req, res, next) => {
                             });
                         }
                     })
-                    .catch(error => res.status(404).json({ message: "Failed to compare passwords", details: error.message }));
+                    .catch(error => res.status(400).json({ message: "Failed to compare passwords", details: error.message }));
             }
         })
-        .catch(error => res.status(404).json({ message: "Failed to find user", details: error.message }));
+        .catch(error => res.status(400).json({ message: "Wrong credentials", details: error.message }));
 };

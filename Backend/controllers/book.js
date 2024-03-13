@@ -15,7 +15,7 @@ exports.createBooks = (req, res, next) => {
     });
     book.save()
         .then(() => res.status(201).json({ message: "Book saved successfully!" }))
-        .catch(error => res.status(404).json({ message: "Error saving the book", details: error.message }));
+        .catch(error => res.status(400).json({ message: "Error saving the book", details: error.message }));
 };
 
 // Function to modify an existing book entry
@@ -32,7 +32,7 @@ exports.modifyBooks = (req, res, next) => {
             } else {
                 Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: "Book modified successfully" }))
-                    .catch(error => res.status(404).json({ message: "Error modifying the book", details: error.message }));
+                    .catch(error => res.status(400).json({ message: "Error modifying the book", details: error.message }));
             }
         })
         .catch((error) => {
@@ -51,7 +51,7 @@ exports.deleteBooks = (req, res, next) => {
                 fs.unlink(`images/${filename}`, () => {
                     Book.deleteOne({ _id: req.params.id })
                         .then(() => { res.status(200).json({ message: "Book deleted successfully" }) })
-                        .catch(error => res.status(404).json({ message: "Error deleting the book", details: error.message }));
+                        .catch(error => res.status(500).json({ message: "Error deleting the book", details: error.message }));
                 });
             }
         })
@@ -85,10 +85,10 @@ exports.getBestRating = (req, res, next) => {
 exports.createNewRating = (req, res, next) => {
     const { userId, rating } = req.body;
     if (userId !== req.auth.userId) {
-        return res.status(403).json({ message: 'Unauthorized request. Only the authenticated user can add a rating.' });
+        return res.status(403).json({ message: "Unauthorized request. Only the authenticated user can add a rating." });
     }
     if (rating < 0 || rating > 5) {
-        return res.status(404).json({ message: "The rating must be a number between 0 and 5." });
+        return res.status(400).json({ message: "The rating must be a number between 0 and 5." });
     }
     Book.findById(req.params.id)
         .then(book => {
@@ -111,7 +111,7 @@ exports.createNewRating = (req, res, next) => {
                     res.status(200).json(updatedBook);
                 })
                 .catch(error => {
-                    res.status(404).json({ message: "Error saving the new rating", details: error.message });
+                    res.status(400).json({ message: "Error saving the new rating", details: error.message });
                 });
         })
         .catch(error => {
